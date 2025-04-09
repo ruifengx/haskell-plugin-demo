@@ -3,9 +3,9 @@ module Main (main) where
 import Foreign.Ptr (FunPtr)
 import Foreign.StablePtr (StablePtr, deRefStablePtr, freeStablePtr)
 import System.Environment (getArgs)
-import System.Posix.DynamicLinker (RTLDFlags (..), dlclose, dlopen, dlsym)
 
 import Host.Library
+import Loader
 
 foreign import ccall "dynamic"
   runLoadPlugin :: FunPtr (IO (StablePtr Plugin)) -> IO (StablePtr Plugin)
@@ -13,8 +13,8 @@ foreign import ccall "dynamic"
 main :: IO ()
 main = do
   [pluginPath] <- getArgs
-  pluginLib <- dlopen pluginPath [RTLD_NOW, RTLD_LOCAL]
-  pLoadPlugin <- dlsym pluginLib "loadPlugin"
+  pluginLib <- loadLibrary pluginPath
+  pLoadPlugin <- getFunction pluginLib "loadPlugin"
   pPlugin <- runLoadPlugin pLoadPlugin
   Plugin{parser, matcher} <- deRefStablePtr pPlugin
   case parse parser "te.*t" of
@@ -25,4 +25,4 @@ main = do
         then putStrLn "matching succeeded!"
         else error "matching failed!"
   freeStablePtr pPlugin
-  dlclose pluginLib
+  freeLibrary pluginLib

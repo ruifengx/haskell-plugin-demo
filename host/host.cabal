@@ -71,7 +71,12 @@ executable host
   import: base, binary
   main-is: Main.hs
   hs-source-dirs: app
+  hs-source-dirs: app-unix
+  build-depends: unix ^>=2.8.4.0
+
+  other-modules:
+    Loader
+
   build-depends:
     base ^>=4.18.2.0 || ^>=4.20.0.0 || ^>=4.21.0.0,
     host,
-    unix ^>=2.8.4.0,
