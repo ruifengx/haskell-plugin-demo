@@ -71,8 +71,13 @@ executable host
   import: base, binary
   main-is: Main.hs
   hs-source-dirs: app
-  hs-source-dirs: app-unix
-  build-depends: unix ^>=2.8.4.0
+
+  if os(windows)
+    hs-source-dirs: app-windows
+    build-depends: Win32 ^>=2.13.3.0 || ^>=2.14.0.0
+  else
+    hs-source-dirs: app-unix
+    build-depends: unix ^>=2.8.4.0
 
   other-modules:
     Loader
