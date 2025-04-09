@@ -1,0 +1,54 @@
+name: CI
+on: push
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        os:
+        - ubuntu-latest
+        ghc-version:
+        - '9.6.7'
+        - '9.10.1'
+        - '9.12.2'
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+    - uses: haskell-actions/setup@v2
+      id: setup
+      with:
+        ghc-version: ${{ matrix.ghc-version }}
+        cabal-version: 'latest'
+        cabal-update: true
+    - name: Generate Build Plan
+      run: |
+        cabal configure
+        cabal build all --dry-run
+    - name: Restore Cached Dependencies
+      uses: actions/cache/restore@v4
+      id: cache
+      with:
+        path: ${{ steps.setup.outputs.cabal-store }}
+        key: ${{ matrix.os }}-${{ matrix.ghc-version }}-${{ hashFiles('**/plan.json') }}
+        restore-keys: ${{ matrix.os }}-${{ matrix.ghc-version }}-
+    - name: Install Dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: cabal build all --only-dependencies
+    - name: Save Cached Dependencies
+      uses: actions/cache/save@v4
+      if: steps.cache.outputs.cache-hit != 'true'
+      with:
+        path: ${{ steps.setup.outputs.cabal-store }}
+        key: ${{ steps.cache.outputs.cache-primary-key }}
+    - name: Check host.cabal
+      run: cabal check
+      working-directory: host
+    - name: Check plugin.cabal
+      run: cabal check
+      working-directory: plugin
+    - run: cabal build all
+    - name: Test Plugin (Linux x86_64)
+      run: cabal run host:host -- dist-newstyle/build/x86_64-linux/ghc-${{ matrix.ghc-version }}/plugin-0.1.0.0/f/plugin/build/plugin/libplugin.so
+      if: matrix.os == 'ubuntu-latest'
