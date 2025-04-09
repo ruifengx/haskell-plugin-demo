@@ -56,5 +56,5 @@ foreign-library plugin
     Plugin
 
   build-depends:
-    base ^>=4.18.2.0,
+    base ^>=4.18.2.0 || ^>=4.20.0.0 || ^>=4.21.0.0,
     host,
