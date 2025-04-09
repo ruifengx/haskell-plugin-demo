@@ -11,6 +11,10 @@ maintainer: ruifengx@outlook.com
 copyright: 2024 Ruifeng Xie
 license: AGPL-3.0-or-later
 build-type: Simple
+tested-with:
+  ghc ==9.6.7
+  ghc ==9.10.1
+  ghc ==9.12.2
 
 source-repository head
   type: git
