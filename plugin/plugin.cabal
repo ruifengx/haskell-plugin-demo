@@ -1,0 +1,60 @@
+cabal-version: 3.8
+name: plugin
+version: 0.1.0.0
+synopsis: Plugin for the application
+description: Please see the README on GitHub at <https://github.com/ruifengx/haskell-plugin-demo#readme>
+category: Plugin
+homepage: https://github.com/ruifengx/haskell-plugin-demo#readme
+bug-reports: https://github.com/ruifengx/haskell-plugin-demo/issues
+author: Ruifeng Xie
+maintainer: ruifengx@outlook.com
+copyright: 2024 Ruifeng Xie
+license: AGPL-3.0-or-later
+build-type: Simple
+
+source-repository head
+  type: git
+  location: https://github.com/ruifengx/haskell-plugin-demo
+
+common base
+  default-language: GHC2021
+  default-extensions:
+    BlockArguments
+    CApiFFI
+    DataKinds
+    DefaultSignatures
+    DeriveAnyClass
+    DerivingStrategies
+    DerivingVia
+    DuplicateRecordFields
+    FunctionalDependencies
+    LambdaCase
+    NoFieldSelectors
+    OverloadedRecordDot
+    PatternSynonyms
+    TypeFamilies
+    ViewPatterns
+
+  ghc-options:
+    -Wall
+    -Wcompat
+    -Widentities
+    -Wincomplete-record-updates
+    -Wincomplete-uni-patterns
+    -Wmissing-export-lists
+    -Wmissing-home-modules
+    -Wpartial-fields
+    -Wredundant-constraints
+    -Wmissing-deriving-strategies
+
+foreign-library plugin
+  import: base
+  type: native-shared
+  hs-source-dirs: src
+  -- cabal-gild: discover src
+  other-modules:
+    Plugin
+
+  build-depends:
+    base ^>=4.18.2.0,
+    host,

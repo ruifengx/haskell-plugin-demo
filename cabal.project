@@ -1,0 +1,4 @@
+packages: host plugin
+
+shared: True
+executable-dynamic: True
