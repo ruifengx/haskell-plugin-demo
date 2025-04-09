@@ -6,6 +6,7 @@ jobs:
     strategy:
       matrix:
         os:
+        - windows-latest
         - ubuntu-latest
         ghc-version:
         - '9.6.7'
@@ -52,3 +53,6 @@ jobs:
     - name: Test Plugin (Linux x86_64)
       run: cabal run host:host -- dist-newstyle/build/x86_64-linux/ghc-${{ matrix.ghc-version }}/plugin-0.1.0.0/f/plugin/build/plugin/libplugin.so
       if: matrix.os == 'ubuntu-latest'
+    - name: Test Plugin (Windows x86_64)
+      run: cabal run host:host -- dist-newstyle/build/x86_64-windows/ghc-${{ matrix.ghc-version }}/plugin-0.1.0.0/f/plugin/build/plugin/libplugin.dll
+      if: matrix.os == 'windows-latest'
